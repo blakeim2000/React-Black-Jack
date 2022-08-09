@@ -4,14 +4,14 @@ body {
 }
 
 #dealer-cards img {
-    height: 175px;
-    width: 125px;
+    height: 70px;
+    width: 50px;
     margin: 1px;
 }
 
 #your-cards img {
-    height: 175px;
-    width: 125px;
+    height: 70px;
+    width: 50px;
     margin: 1px;
 }
 
@@ -36,5 +36,4 @@ body {
     margin-right: auto;
     width:80%;
     font-size: 34px;
-    border:1px solid black;
   }

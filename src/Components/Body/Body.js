@@ -12,7 +12,7 @@ function Body() {
   const [winCount, setWinCount] = React.useState(0);
   const [loseCount, setLoseCount] = React.useState(0);
   const [winrate, setWinrate] = React.useState("0%");
-  var deck = shuffleDeck(buildDeck());
+  var deck = React.useRef(shuffleDeck(buildDeck()));
   var canHit = React.useRef(true);
   var canStay = React.useRef(true);
   const [gameDone, setGameDone] = React.useState(false);
@@ -56,9 +56,7 @@ function Body() {
     canHit.current = true;
     canStay.current = true;
     setGameDone(false);
-    //document.getElementById("results").innerText = message;
-    //document.getElementById("buttonAppear").innerHTML = "";
-    deck = shuffleDeck(buildDeck());
+    deck.current = shuffleDeck(buildDeck());
     startGame(deck);
   }
 
@@ -79,24 +77,24 @@ function Body() {
       "K",
     ];
     let types = ["C", "D", "H", "S"];
-    var deck = [];
+    var tempDeck = [];
 
     for (let i = 0; i < types.length; i++) {
       for (let j = 0; j < values.length; j++) {
-        deck.push(values[j] + "-" + types[i]);
+        tempDeck.push(values[j] + "-" + types[i]);
       }
     }
-    return deck;
+    return tempDeck;
   }
 
-  function shuffleDeck(deck) {
-    for (let i = 0; i < deck.length; i++) {
-      let j = Math.floor(Math.random() * deck.length);
-      let temp = deck[i];
-      deck[i] = deck[j];
-      deck[j] = temp;
+  function shuffleDeck(tempDeck) {
+    for (let i = 0; i < tempDeck.length; i++) {
+      let j = Math.floor(Math.random() * tempDeck.length);
+      let temp = tempDeck[i];
+      tempDeck[i] = tempDeck[j];
+      tempDeck[j] = temp;
     }
-    return deck;
+    return tempDeck;
   }
 
   function startGame(deck) {
@@ -104,7 +102,7 @@ function Body() {
     let tempDealerCards = [];
     let tempDealerSum = 0;
     for (let i = 0; i < 2; i++) {
-      let card = deck.pop();
+      let card = deck.current.pop();
       const path = "./cards/" + card + ".png";
       tempDealerCards.push({ src: path });
       tempDealerSum = tempDealerSum + getValue(card);
@@ -114,7 +112,7 @@ function Body() {
     let tempYourCards = [];
     let tempYourSum = 0;
     for (let i = 0; i < 2; i++) {
-      let card = deck.pop();
+      let card = deck.current.pop();
       const path = "./cards/" + card + ".png";
       tempYourCards.push({ src: path });
       tempYourSum = tempYourSum + getValue(card);
@@ -139,7 +137,7 @@ function Body() {
     if (!canHit.current) {
       return;
     }
-    let card = deck.pop();
+    let card = deck.current.pop();
     let tempYourSum = yourSum; 
     tempYourSum = tempYourSum + getValue(card);
     yourAceCount.current += checkAce(card);
@@ -163,18 +161,18 @@ function Body() {
     }
 
     let tempDealerSum = dealerSum;
-    tempDealerSum = reduceYourAce(
+    tempDealerSum = reduceDealerAce(
       tempDealerSum
     );
 
     let tempDealerCards = [];
     while (tempDealerSum < 17) {
-      let card = deck.pop();
+      let card = deck.current.pop();
       tempDealerSum = tempDealerSum + getValue(card);
       dealerAceCount.current += checkAce(card);
       const path = "./cards/" + card + ".png";
       tempDealerCards.push({ src: path });
-      tempDealerSum = reduceYourAce(
+      tempDealerSum = reduceDealerAce(
         tempDealerSum
       );
     }
