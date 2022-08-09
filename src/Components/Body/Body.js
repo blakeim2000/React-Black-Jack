@@ -33,7 +33,7 @@ function Body() {
 
   React.useEffect(() => {
     if (yourSum > 21) {
-      endgame();
+      endgame(yourSum, dealerSum);
     }
 
     if (yourSum === 21) {
@@ -43,7 +43,7 @@ function Body() {
 
   React.useEffect(() => {
     if (dealerSum === 21) {
-      endgame();
+      endgame(yourSum, dealerSum);
     }
   }, [dealerSum]);
 
@@ -179,10 +179,10 @@ function Body() {
 
     setDealerSum(tempDealerSum);
     setDealerCards([...dealerCards, ...tempDealerCards]);
-    endgame();
+    endgame(yourSum, tempDealerSum);
   }
 
-  function endgame() {
+  function endgame(yourSum, dealerSum) {
 
     canHit.current = false;
     canStay.current = false;
@@ -197,7 +197,7 @@ function Body() {
     } else if (yourSum > dealerSum) {
       setMessage("You Win!");
       win();
-    } else{
+    } else {
       setMessage("You Lose!");
       lose();
     }
