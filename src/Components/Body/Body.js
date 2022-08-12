@@ -47,6 +47,10 @@ function Body() {
     }
   }, [dealerSum]);
 
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  } 
+
   function restart() {
     dealerAceCount.current = 0;
     yourAceCount.current = 0;
@@ -175,6 +179,7 @@ function Body() {
       tempDealerSum = reduceDealerAce(
         tempDealerSum
       );
+      await sleep(1000);
     }
 
     setDealerSum(tempDealerSum);
