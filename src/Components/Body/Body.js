@@ -57,10 +57,7 @@ function Body() {
     if (yourSum > 21) {
       endgame(yourSum, dealerSum);
     }
-
-    if (yourSum === 21) {
-      stay();
-    }
+    
   }, [yourSum]);
 
   React.useEffect(() => {
