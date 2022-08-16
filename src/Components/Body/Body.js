@@ -15,7 +15,9 @@ function Body() {
   var deck = React.useRef(shuffleDeck(buildDeck()));
   var canHit = React.useRef(true);
   var canStay = React.useRef(true);
+  const [stayFlag, setStayFlag] = React.useState(false);
   const [gameDone, setGameDone] = React.useState(false);
+
 
   React.useEffect(() => {
     startGame(deck);
@@ -32,6 +34,26 @@ function Body() {
   }, [winCount, loseCount]);
 
   React.useEffect(() => {
+    if (dealerSum < 17 && stayFlag === true) { 
+      setTimeout(() => {
+        let tempDealerSum = dealerSum;
+        let card = deck.current.pop();
+        tempDealerSum = tempDealerSum + getValue(card);
+        dealerAceCount.current += checkAce(card);
+        const path = "./cards/" + card + ".png";
+        let tempDealerCards = [{ src: path }];
+        tempDealerSum = reduceDealerAce(
+         tempDealerSum); 
+        setDealerCards([...dealerCards, ...tempDealerCards]);
+        setDealerSum(tempDealerSum);
+      }, 1000);
+    } else if (stayFlag === true) {
+      setStayFlag(false);
+      endgame(yourSum, dealerSum);
+    }
+  }, [dealerSum, stayFlag]);
+
+  React.useEffect(() => {
     if (yourSum > 21) {
       endgame(yourSum, dealerSum);
     }
@@ -46,6 +68,7 @@ function Body() {
       endgame(yourSum, dealerSum);
     }
   }, [dealerSum]);
+
 
   function restart() {
     dealerAceCount.current = 0;
@@ -160,6 +183,10 @@ function Body() {
       return;
     }
 
+    canHit.current = false;
+    canStay.current = false;
+    setStayFlag(true);
+    /*
     let tempDealerSum = dealerSum;
     tempDealerSum = reduceDealerAce(
       tempDealerSum
@@ -176,10 +203,7 @@ function Body() {
         tempDealerSum
       );
     }
-
-    setDealerSum(tempDealerSum);
-    setDealerCards([...dealerCards, ...tempDealerCards]);
-    endgame(yourSum, tempDealerSum);
+    */
   }
 
   function endgame(yourSum, dealerSum) {
